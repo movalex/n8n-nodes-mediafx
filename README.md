@@ -75,6 +75,10 @@ This is the main node for all media processing operations. You select a `resourc
     - **Partial Mix Mode**: Insert audio at specific time ranges with precise start time and duration
     - **Audio Looping**: Automatically repeat shorter audio to fill the specified duration
     - **Independent Fade Effects**: Apply fade-in and fade-out effects with customizable duration for both full and partial mixing
+-   `Concatenate`: Combine multiple audio files into a single audio file:
+    - **Multiple Sources**: Support for unlimited number of audio input files
+    - **Format Flexibility**: Output in MP3, WAV, AAC, or FLAC formats
+    - **Lossless Concatenation**: Uses FFmpeg's concat demuxer for optimal quality when possible
 
 #### **Image** Resource
 -   `Image to Video`: Create a video from a source image, specifying duration and output dimensions.
@@ -187,6 +191,71 @@ Apply a watermark for a specific time range.
   "endTime": 25
 }
 ```
+
+### Audio Concatenation
+Combine multiple audio files into a single output file.
+
+```json
+{
+  "resource": "audio",
+  "operation": "concatenateAudio",
+  "audioSources": {
+    "sources": [
+      {
+        "sourceType": "binary",
+        "binaryProperty": "audio1"
+      },
+      {
+        "sourceType": "binary", 
+        "binaryProperty": "audio2"
+      },
+      {
+        "sourceType": "url",
+        "value": "https://example.com/audio3.mp3"
+      }
+    ]
+  },
+  "concatenateOutputFormat": "mp3"
+}
+```
+
+## Testing with Docker
+
+The project includes Docker setup for easy testing of your MediaFX node in an n8n environment.
+
+### Quick Start
+
+1. **Build and run with the automated script:**
+   ```bash
+   # On Windows
+   docker-test.bat
+   
+   # On Linux/macOS
+   chmod +x docker-test.sh
+   ./docker-test.sh
+   ```
+
+2. **Or manually with Docker Compose:**
+   ```bash
+   # Build the project first
+   npm run build
+   
+   # Start development environment
+   docker-compose up --build n8n-dev
+   
+   # Or start production environment
+   docker-compose --profile prod up --build n8n-prod
+   ```
+
+3. **Access n8n:**
+   - Development: http://localhost:5678
+   - Production: http://localhost:5679
+   - Username: `admin`
+   - Password: `password`
+
+### Test Media Files
+
+Place your test media files in the `./test-media/` directory. They will be available at `/home/node/test-media/` inside the n8n container.
 
 ## Requirements
 
