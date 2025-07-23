@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  n8n-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: n8n-mediafx-dev
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=password
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678/
+      - GENERIC_TIMEZONE=UTC
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./test-media:/home/node/test-media  # Mount test media files
+    restart: unless-stopped
+
+  # Alternative service using production build
+  n8n-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    container_name: n8n-mediafx-prod
+    ports:
+      - "5679:5678"  # Different port to avoid conflict
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=password
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5679/
+      - GENERIC_TIMEZONE=UTC
+    volumes:
+      - n8n_prod_data:/home/node/.n8n
+      - ./test-media:/home/node/test-media
+    restart: unless-stopped
+    profiles:
+      - prod  # Only start with --profile prod
+
+volumes:
+  n8n_data:
+  n8n_prod_data:

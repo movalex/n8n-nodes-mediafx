@@ -1,0 +1,20 @@
+# Docker ignore file for n8n-nodes-mediafx
+node_modules/
+*.log
+.git/
+.gitignore
+README.md
+.env
+.DS_Store
+Thumbs.db
+*.md
+!package*.json
+.vscode/
+.idea/
+coverage/
+.nyc_output/
+test/
+*.test.js
+*.test.ts
+.eslintrc.js
+jest.config.js
