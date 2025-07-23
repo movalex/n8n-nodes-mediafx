@@ -25,6 +25,11 @@ export const audioProperties: INodeProperties[] = [
 				value: 'mixAudio',
 				description: 'Mix a primary video/audio source with a secondary audio source',
 			},
+			{
+				name: 'Concatenate',
+				value: 'concatenateAudio',
+				description: 'Concatenate multiple audio files into a single audio file',
+			},
 		],
 		default: 'extract',
 	},
@@ -377,5 +382,77 @@ export const audioProperties: INodeProperties[] = [
 			},
 		},
 		description: 'Duration of fade out effect in seconds',
+	},
+
+	// ====================================================================
+	//                        CONCATENATE AUDIO FIELDS
+	// ====================================================================
+	{
+		displayName: 'Audio Sources',
+		name: 'audioSources',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+		},
+		placeholder: 'Add Audio Source',
+		default: [],
+		displayOptions: {
+			show: {
+				resource: ['audio'],
+				operation: ['concatenateAudio'],
+			},
+		},
+		options: [
+			{
+				displayName: 'Source',
+				name: 'sources',
+				values: [
+					{
+						displayName: 'Source Type',
+						name: 'sourceType',
+						type: 'options',
+						options: [
+							{ name: 'URL', value: 'url' },
+							{ name: 'Binary Data', value: 'binary' },
+						],
+						default: 'url',
+					},
+					{
+						displayName: 'Value',
+						name: 'value',
+						type: 'string',
+						default: '',
+						placeholder: 'https://example.com/audio.mp3',
+						displayOptions: { show: { sourceType: ['url'] } },
+					},
+					{
+						displayName: 'Binary Property',
+						name: 'binaryProperty',
+						type: 'string',
+						default: 'data',
+						displayOptions: { show: { sourceType: ['binary'] } },
+					},
+				],
+			},
+		],
+	},
+	{
+		displayName: 'Output Format',
+		name: 'concatenateOutputFormat',
+		type: 'options',
+		displayOptions: {
+			show: {
+				resource: ['audio'],
+				operation: ['concatenateAudio'],
+			},
+		},
+		options: [
+			{ name: 'MP3', value: 'mp3' },
+			{ name: 'WAV', value: 'wav' },
+			{ name: 'AAC', value: 'aac' },
+			{ name: 'FLAC', value: 'flac' },
+		],
+		default: 'mp3',
+		description: 'Format for the concatenated audio file',
 	},
 ]; 

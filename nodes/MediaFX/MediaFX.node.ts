@@ -23,6 +23,7 @@ import {
 import {
 	executeAddSubtitle,
 	executeAddText,
+	executeConcatenateAudio,
 	executeExtractAudio,
 	executeImageToVideo,
 	executeMerge,
@@ -388,6 +389,28 @@ export class MediaFX implements INodeType {
 								extractBitrate,
 								i,
 							);
+							break;
+						}
+
+						case 'concatenateAudio': {
+							const sourcesParam = this.getNodeParameter('audioSources', i, {}) as {
+								sources?: Array<{ sourceType: string; value: string; binaryProperty?: string }>;
+							};
+							const sourcesConfig = sourcesParam.sources || [];
+							
+							if (sourcesConfig.length < 2) {
+								throw new NodeOperationError(
+									this.getNode(),
+									'At least 2 audio sources are required for concatenation',
+									{ itemIndex: i }
+								);
+							}
+
+							const { paths, cleanup: c } = await resolveInputs(this, i, sourcesConfig);
+							cleanup = c;
+
+							const outputFormat = this.getNodeParameter('concatenateOutputFormat', i) as string;
+							outputPath = await executeConcatenateAudio.call(this, paths, outputFormat, i);
 							break;
 						}
 
